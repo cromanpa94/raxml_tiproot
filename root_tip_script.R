@@ -2,13 +2,21 @@ library(ape)
 
 ##########Function######
 get_ingroup_TipRoot_distance<- function(tree, outgroupPattern='ppa', re_root=T){
+  
+  ##First, identify the outgroup (outgroupPattern)
   outgroup<-tree$tip.label[grep(outgroupPattern,tree$tip.label)]
+  
+  #Reroot if re_root == T usinf ape::root
   if(re_root ==T){ 
     cat('Rooting the tree using tips from the outgroup\n')
     tree<-root(tree, outgroup)  }
+  
+  ##drop the outgroup from the original tree
   ingroup<-drop.tip(tree, outgroup)
+  ##Extract distances from root to tips
   rt_dist<-as.data.frame(diag(vcv.phylo(ingroup)))
   names(rt_dist)<-'distance'
+  #Return a data.frame with a single column (distance) and tip.labels as row.names
   return(rt_dist)
 }
 
