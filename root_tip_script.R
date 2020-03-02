@@ -1,7 +1,8 @@
 library(ape)
 
 ##########Function######
-get_ingroup_TipRoot_distance<- function(tree, outgroupPattern='ppa', re_root=T){
+get_ingroup_TipRoot_distance<- function(tree, outgroupPattern='ppa', 
+                                        re_root=T, asVector=T){
   
   ##First, identify the outgroup (outgroupPattern)
   outgroup<-tree$tip.label[grep(outgroupPattern,tree$tip.label)]
@@ -14,10 +15,14 @@ get_ingroup_TipRoot_distance<- function(tree, outgroupPattern='ppa', re_root=T){
   ##drop the outgroup from the original tree
   ingroup<-drop.tip(tree, outgroup)
   ##Extract distances from root to tips
-  rt_dist<-as.data.frame(diag(vcv.phylo(ingroup)))
+  distances<-diag(vcv.phylo(ingroup))
+ 
+  return(if(asVector == F){  rt_dist<-as.data.frame(distances)
   names(rt_dist)<-'distance'
+  rt_dist
   #Return a data.frame with a single column (distance) and tip.labels as row.names
-  return(rt_dist)
+  }else{distances}
+  )
 }
 
 #For a single tree
